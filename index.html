@@ -1,90 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kopf | archive</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <title>Full Screen Video</title>
+    <style>
+        /* Remove default margins and hide scrollbars */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
 
+        /* Style the video to fill the screen */
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            /* "cover" ensures the video fills the screen even if aspect ratios differ */
+            object-fit: cover; 
+        }
+    </style>
+</head>
 <body>
 
-    <div class="lava-container">
-        <div class="blob blob1"></div>
-        <div class="blob blob2"></div>
-        <div class="blob blob3"></div>
-    </div>
-    <div id="canvas-container"></div>
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="BIG GUYT.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
 
-    <main class="content h-screen w-full flex flex-col justify-center items-center px-6">
-
-        <div
-            class="glass-panel p-10 md:p-14 rounded-[3rem] w-full max-w-2xl reveal flex flex-col items-center text-center">
-
-            <p class="text-slate-400 plex-mono text-[9px] tracking-[0.5em] uppercase mb-10 opacity-70">2 0 2 6 //
-                A R C H I V E</p>
-
-            <!-- Discord Profile Centerpiece -->
-            <div class="flex flex-col items-center mb-10 interactive">
-                <div class="relative mb-6">
-                    <div class="w-24 h-24 rounded-full bg-zinc-900 border border-white/20 overflow-hidden shadow-2xl">
-                        <img src="avatar.png" alt="Avatar" class="w-full h-full object-cover">
-                    </div>
-                    <div class="discord-status absolute bottom-1.5 right-1.5 border-4 border-[#08080c]"></div>
-                </div>
-
-                <!-- "add on discord" label + kopf. -->
-                <span class="plex-mono text-xs tracking-[0.2em] uppercase text-slate-300 mb-3 inline-block">add on
-                    discord</span>
-                <h1 class="discord-label text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6 text-white text-glow interactive"
-                    id="discord-copy" title="Click to copy">kopf.</h1>
-
-                <div class="flex items-center gap-4">
-                    <span class="text-sm px-3 py-1 bg-white/10 rounded-md">🇵🇭</span>
-                    <span class="text-slate-400 plex-mono text-[10px] uppercase tracking-widest">GMT+8</span>
-                </div>
-            </div>
-
-            <!-- Social Links -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full interactive">
-                <a href="https://youtube.com/@kopf" target="_blank"
-                    class="social-btn p-4 rounded-2xl flex items-center justify-between group">
-                    <span
-                        class="plex-mono text-[10px] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition">YouTube</span>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition">@kopf</span>
-                </a>
-                <a href="https://x.com/kopfff" target="_blank"
-                    class="social-btn p-4 rounded-2xl flex items-center justify-between group">
-                    <span
-                        class="plex-mono text-[10px] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition">Twitter</span>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition">@kopfff</span>
-                </a>
-            </div>
-
-            <!-- Footer Time -->
-            <div class="mt-12 pt-8 border-t border-white/10 w-full">
-                <div class="inline-flex items-center gap-4 interactive">
-                    <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse shadow-[0_0_12px_#60a5fa]"></span>
-                    <span class="plex-mono text-lg font-bold text-white tracking-tighter" id="gmt-time">12:00
-                        AM</span>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Copied toast -->
-    <div class="copy-toast" id="copy-toast">copied text</div>
-
-    <script src="script.js"></script>
 </body>
-
 </html>
