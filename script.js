@@ -1,3 +1,15 @@
+        // Shared birthday check + intro trigger
+        const isBirthday = (() => {
+            const manila = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+            return manila.getMonth() === 4 && manila.getDate() === 14;
+        })();
+
+        function startIntro() {
+            document.body.classList.add('intro-ready');
+        }
+
+        if (!isBirthday) startIntro();
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -161,6 +173,17 @@
             });
         })();
 
+        // Strip float-in classes after entrance so subsequent animations don't conflict
+        document.querySelectorAll('.fi').forEach(el => {
+            el.addEventListener('animationend', function handler(e) {
+                if (e.animationName === 'staggerIn') {
+                    el.removeEventListener('animationend', handler);
+                    el.classList.forEach(c => { if (c === 'fi' || /^fi-\d+$/.test(c)) el.classList.remove(c); });
+                    el.style.opacity = '1';
+                }
+            });
+        });
+
         // Typing Effect
         (function () {
             const el = document.getElementById('archive-text');
@@ -176,15 +199,14 @@
             }, 600);
         })();
 
-        // Glitch Effect
+        // Glitch + Thunder Effect
         (function () {
             const el = document.getElementById('discord-copy');
             if (!el) return;
             setInterval(() => {
-                if (Math.random() < 0.35) {
-                    el.classList.add('glitching');
-                    setTimeout(() => el.classList.remove('glitching'), 550);
-                }
+                const effect = Math.random() < 0.5 ? 'glitching' : 'thundering';
+                el.classList.add(effect);
+                setTimeout(() => el.classList.remove(effect), 750);
             }, 3500);
         })();
 
@@ -264,9 +286,7 @@
 
         // Birthday Overlay — only on May 14 (GMT+8)
         (function () {
-            const now    = new Date();
-            const manila = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
-            if (manila.getMonth() !== 4 || manila.getDate() !== 14) return;
+            if (!isBirthday) return;
 
             const overlay = document.getElementById('birthday-overlay');
             const canvas  = document.getElementById('confetti-canvas');
@@ -286,7 +306,7 @@
 
             function dismiss() {
                 overlay.classList.add('fade-out');
-                setTimeout(() => { overlay.style.display = 'none'; }, 950);
+                setTimeout(() => { overlay.style.display = 'none'; startIntro(); }, 950);
             }
 
             overlay.addEventListener('click', dismiss);
