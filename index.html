@@ -1,143 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kopf | archive</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <title>We'll Be Right Back - Maintenance</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a0a; /* Deep black background */
+            color: #e0e0e0; /* Light gray text for readability */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 550px;
+            background: #141414; /* Slightly lighter dark gray for the card */
+            padding: 50px 40px;
+            border-radius: 12px;
+            border: 1px solid #222; /* Subtle border to define the container */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #ffffff; /* Crisp white for the heading */
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #a0a0a0; /* Muted gray for the description */
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+            color: #555555; /* Darker gray for the footer */
+            margin-bottom: 0;
+        }
+    </style>
+</head>
 <body>
 
-    <!-- Birthday Overlay -->
-    <div id="birthday-overlay">
-        <canvas id="confetti-canvas"></canvas>
-        <div class="bday-content">
-            <span class="bday-emoji">🎂</span>
-            <h1>It's my birthday!</h1>
-            <p>Click anywhere to continue</p>
+    <div class="container">
+        <!-- Floating wrench icon -->
+        <div class="icon">🛠️</div>
+        
+        <h1>Under Maintenance</h1>
+        
+        <p>We're currently updating our website to bring you a better experience. We look forward to welcoming you back shortly!</p>
+        
+        <div class="footer">
+            <p>Thank you for your patience.</p>
         </div>
     </div>
 
-    <div class="lava-container">
-        <div class="blob blob1"></div>
-        <div class="blob blob2"></div>
-        <div class="blob blob3"></div>
-    </div>
-    <div id="canvas-container"></div>
-
-    <main id="home-view" class="content h-screen w-full flex flex-col justify-center items-center px-6">
-
-        <div
-            class="glass-panel p-10 md:p-14 rounded-[3rem] w-full max-w-2xl reveal flex flex-col items-center text-center">
-
-            <p class="text-slate-400 plex-mono text-[9px] tracking-[0.5em] uppercase mb-10 opacity-70 fi fi-1" id="archive-text">2 0 2 6 //
-                A R C H I V E</p>
-
-            <!-- Discord Profile Centerpiece -->
-            <div class="flex flex-col items-center mb-10 interactive">
-                <div class="relative mb-6 fi fi-2">
-                    <div class="w-24 h-24 rounded-full bg-zinc-900 border border-white/20 overflow-hidden shadow-2xl">
-                        <img src="avatar.png" alt="Avatar" class="w-full h-full object-cover">
-                    </div>
-                    <div class="discord-status absolute bottom-1.5 right-1.5 border-4 border-[#08080c]"></div>
-                </div>
-
-                <!-- "add on discord" label + kopf. -->
-                <span class="plex-mono text-xs tracking-[0.2em] uppercase text-slate-300 mb-3 inline-block fi fi-3">add on
-                    discord</span>
-                <h1 class="discord-label text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6 text-white text-glow interactive fi fi-4"
-                    id="discord-copy" title="Click to copy">kopf.</h1>
-
-                <div class="flex items-center gap-4 fi fi-5">
-                    <div class="flag-tooltip-wrap">
-                        <span class="text-sm px-3 py-1 bg-white/10 rounded-md">🇵🇭</span>
-                        <span class="flag-tooltip">Manila, Philippines</span>
-                    </div>
-                    <span class="text-slate-400 plex-mono text-[10px] uppercase tracking-widest">GMT+8</span>
-                </div>
-            </div>
-
-            <!-- Social Links -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full interactive fi fi-6">
-                <div class="social-btn p-4 rounded-2xl flex items-center gap-3 group">
-                    <a href="https://youtube.com/@kopf" target="_blank" class="flex items-center justify-between flex-1">
-                        <span class="plex-mono text-[10px] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition">YouTube</span>
-                        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition">@kopf</span>
-                    </a>
-                    <button class="yt-videos-btn" onclick="showVideos()">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-                <a href="https://x.com/kopfff" target="_blank"
-                    class="social-btn p-4 rounded-2xl flex items-center justify-between group">
-                    <span
-                        class="plex-mono text-[10px] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition">Twitter</span>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition">@kopfff</span>
-                </a>
-            </div>
-
-            <!-- Spotify Widget -->
-            <div id="spotify-widget" class="w-full interactive mt-4 fi fi-7">
-                <div class="spotify-mini">
-                    <svg class="spotify-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                    </svg>
-                    <span id="sp-mini-text">not listening</span>
-                    <span class="spotify-chevron">▾</span>
-                </div>
-                <div class="spotify-expanded">
-                    <img id="np-art" src="" alt="">
-                    <div class="np-info">
-                        <span class="np-label">LISTENING TO</span>
-                        <a id="np-song" target="_blank" rel="noopener noreferrer">—</a>
-                        <span id="np-artist">—</span>
-                        <div class="np-progress"><div id="np-progress-fill"></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Time -->
-            <div class="mt-12 pt-8 border-t border-white/10 w-full fi fi-8">
-                <div class="inline-flex items-center gap-4 interactive">
-                    <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse shadow-[0_0_12px_#60a5fa]"></span>
-                    <span class="plex-mono text-lg font-bold text-white tracking-tighter" id="gmt-time">12:00
-                        AM</span>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Videos View -->
-    <div id="videos-view">
-        <div class="vv-inner">
-            <header class="vv-header">
-                <button id="back-btn" onclick="showHome()">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    Back
-                </button>
-                <span class="vv-label">Y O U T U B E</span>
-            </header>
-            <h2 class="vv-title">Latest Videos</h2>
-            <div id="videos-container"></div>
-        </div>
-    </div>
-
-    <!-- Copied toast -->
-    <div class="copy-toast" id="copy-toast">copied text</div>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="script.js"></script>
 </body>
-
 </html>
