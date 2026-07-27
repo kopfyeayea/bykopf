@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Driving Cars — Trend Reviewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161c;
+    --bg-2:#0d1015;
+    --surface:#1b2129;
+    --surface-2:#232b35;
+    --surface-3:#2a3340;
+    --line:#333d49;
+    --text:#e8eaed;
+    --text-dim:#97a2ad;
+    --text-faint:#5c6773;
+    --accent:#f2a93b;
+    --accent-dim:#8a6528;
+    --cyan:#4fc3f7;
+    --good:#4caf7d;
+    --bad:#e5533d;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse at top, #1a212b 0%, var(--bg) 45%, var(--bg-2) 100%);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  /* HEADER */
+  header{margin-bottom:22px;}
+  .eyebrow{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-size:12.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px;height:2px;background:var(--accent);display:inline-block;
+    clip-path: polygon(0 0, 70% 0, 100% 100%, 30% 100%);
+  }
+  h1{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,5vw,42px);
+    margin:6px 0 4px;
+    letter-spacing:.01em;
+  }
+  .sub{color:var(--text-dim);font-size:14.5px;max-width:60ch;line-height:1.5;}
+
+  /* NAV */
+  nav{
+    display:flex;gap:6px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:5px;
+    margin:22px 0 26px;
+  }
+  nav button{
+    flex:1;
+    background:transparent;
+    border:none;
+    color:var(--text-dim);
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.03em;
+    padding:11px 6px;
+    border-radius:9px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav button.active{background:var(--surface-3);color:var(--text);}
+  nav button:hover:not(.active){color:var(--text);}
+
+  section.view{display:none;}
+  section.view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  /* FLASHCARDS */
+  .deck-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .deck-progress{font-family:'Rajdhani',sans-serif;color:var(--text-dim);font-size:14px;letter-spacing:.04em;}
+  .card-stage{perspective:1600px;height:340px;}
+  .flashcard{
+    position:relative;width:100%;height:100%;
+    transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .flashcard.flipped{transform:rotateY(180deg);}
+  .face{
+    position:absolute;inset:0;
+    backface-visibility:hidden;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+  }
+  .face.front{
+    background:linear-gradient(155deg,var(--surface-2),var(--surface));
+    justify-content:center;
+    align-items:flex-start;
+  }
+  .face.back{
+    background:var(--surface-2);
+    transform:rotateY(180deg);
+    justify-content:flex-start;
+    overflow-y:auto;
+  }
+  .pillar-tag{
+    font-family:'Rajdhani',sans-serif;
+    font-size:12.5px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .pillar-title{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:30px;
+    line-height:1.15;
+  }
+  .flip-hint{
+    margin-top:16px;
+    color:var(--text-faint);
+    font-size:13px;
+  }
+  .face.back h3{
+    font-family:'Rajdhani',sans-serif;
+    font-size:16px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin:0 0 10px;
+  }
+  .face.back ul{margin:0;padding-left:20px;line-height:1.65;font-size:15px;color:var(--text);}
+  .face.back p{line-height:1.65;font-size:15px;margin:0 0 6px;}
+  .face.back .stat{color:var(--accent);font-weight:700;}
+
+  .deck-nav{display:flex;gap:10px;margin-top:16px;}
+  .deck-nav button{
+    flex:1;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .deck-nav button:hover{border-color:var(--accent-dim);}
+  .deck-dots{display:flex;justify-content:center;gap:6px;margin-top:14px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--line);cursor:pointer;}
+  .dot.on{background:var(--accent);}
+
+  /* FACTS */
+  .fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .fact-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .fact-num{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    font-size:32px;
+    color:var(--accent);
+    line-height:1;
+  }
+  .fact-label{color:var(--text-dim);font-size:13.5px;margin-top:8px;line-height:1.4;}
+  .members-card{
+    margin-top:18px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px 22px;
+  }
+  .members-card h3{
+    font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--text-dim);margin:0 0 10px;
+  }
+  .members-card ul{margin:0;padding-left:18px;line-height:1.8;color:var(--text);}
+
+  /* QUIZ */
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;}
+  .gauge-score{
+    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--text-dim);
+    margin-top:2px;letter-spacing:.05em;
+  }
+  .quiz-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;margin-top:8px;
+  }
+  .q-count{font-family:'Rajdhani',sans-serif;color:var(--text-faint);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+  .q-text{font-size:18px;line-height:1.45;margin-bottom:18px;font-weight:500;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:13px 16px;
+    border-radius:10px;
+    font-size:15px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover:not(:disabled){border-color:var(--accent-dim);}
+  .opt.correct{background:rgba(76,175,125,.15);border-color:var(--good);}
+  .opt.wrong{background:rgba(229,83,61,.15);border-color:var(--bad);}
+  .opt:disabled{cursor:default;}
+  .explain{
+    margin-top:16px;padding:14px 16px;border-radius:10px;
+    background:var(--surface-3);font-size:14px;line-height:1.55;color:var(--text-dim);
+    display:none;
+  }
+  .explain.show{display:block;}
+  .quiz-foot{display:flex;justify-content:flex-end;margin-top:18px;}
+  .next-btn{
+    background:var(--accent);color:#1a1406;border:none;font-family:'Rajdhani',sans-serif;
+    font-weight:700;font-size:15px;padding:11px 22px;border-radius:10px;cursor:pointer;
+    letter-spacing:.03em;
+  }
+  .next-btn:disabled{background:var(--surface-3);color:var(--text-faint);cursor:not-allowed;}
+  .result-card{text-align:center;padding:36px 20px;}
+  .result-card h2{font-family:'Rajdhani',sans-serif;font-size:30px;margin:6px 0;}
+  .retry-btn{
+    margin-top:16px;background:var(--surface-2);border:1px solid var(--accent-dim);color:var(--accent);
+    font-family:'Rajdhani',sans-serif;font-weight:700;padding:11px 24px;border-radius:10px;cursor:pointer;
+  }
+
+  footer{margin-top:40px;text-align:center;color:var(--text-faint);font-size:12.5px;letter-spacing:.03em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Future Trends · 12 HUMSS A</div>
+    <h1>Self-Driving Cars</h1>
+    <p class="sub">A review deck for the trend framework — duration, acceptability, cultural basis, transitory increase, and cause &amp; consequence. Flip the cards, check the numbers, then test yourself.</p>
+  </header>
+
+  <nav>
+    <button class="active" data-view="cards">Flashcards</button>
+    <button data-view="facts">Key Facts</button>
+    <button data-view="quiz">Quiz</button>
+  </nav>
+
+  <!-- FLASHCARDS -->
+  <section class="view active" id="view-cards">
+    <div class="deck-controls">
+      <span class="deck-progress" id="deckProgress">Card 1 / 8</span>
+      <span class="deck-progress" style="color:var(--text-faint)">Tap card to flip</span>
+    </div>
+    <div class="card-stage">
+      <div class="flashcard" id="flashcard">
+        <div class="face front">
+          <div class="pillar-tag" id="frontTag">Description</div>
+          <div class="pillar-title" id="frontTitle">What is a self-driving car?</div>
+          <div class="flip-hint">Tap to reveal →</div>
+        </div>
+        <div class="face back" id="backContent"></div>
+      </div>
+    </div>
+    <div class="deck-nav">
+      <button id="prevBtn">← Prev</button>
+      <button id="nextBtn">Next →</button>
+    </div>
+    <div class="deck-dots" id="deckDots"></div>
+  </section>
+
+  <!-- FACTS -->
+  <section class="view" id="view-facts">
+    <div class="fact-grid" id="factGrid"></div>
+    <div class="members-card">
+      <h3>Group 2 — 12 HUMSS A, St. Matthew</h3>
+      <ul>
+        <li>Dela Cruz, Kristoffe</li>
+        <li>Udo, Regimart</li>
+        <li>Dalapnas, Cielloen</li>
+        <li>Malimban, Christine</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="view-quiz">
+    <div class="gauge-wrap">
+      <svg id="gauge" width="220" height="130" viewBox="0 0 220 130">
+        <path d="M 15 115 A 95 95 0 0 1 205 115" fill="none" stroke="#2a3340" stroke-width="14" stroke-linecap="round"/>
+        <path id="gaugeFill" d="M 15 115 A 95 95 0 0 1 205 115" fill="none" stroke="#f2a93b" stroke-width="14" stroke-linecap="round" stroke-dasharray="298" stroke-dashoffset="298"/>
+        <line id="needle" x1="110" y1="115" x2="110" y2="35" stroke="#e8eaed" stroke-width="3" stroke-linecap="round" style="transform-origin:110px 115px; transition: transform .5s cubic-bezier(.4,.2,.2,1);"/>
+        <circle cx="110" cy="115" r="7" fill="#e8eaed"/>
+      </svg>
+      <div class="gauge-score" id="gaugeScore">0 / 10 correct</div>
+    </div>
+
+    <div class="quiz-card" id="quizCard"></div>
+  </section>
+
+  <footer>Built from your 10-slide deck · review before you present</footer>
+</div>
+
+<script>
+// ---------------- DATA ----------------
+const cards = [
+  {
+    tag:"Description",
+    title:"What is a self-driving car?",
+    back:`<h3>Definition</h3><p>Vehicles that operate with little human input, using <span class="stat">cameras, sensors, GPS, and radar</span> to read their environment and navigate safely.</p>`
+  },
+  {
+    tag:"Evidence",
+    title:"Why call this a real trend?",
+    back:`<h3>Supporting evidence</h3><ul>
+      <li>Already implemented in 1st-world countries</li>
+      <li>Continuous feature advancement</li>
+      <li>Generally safer than human-driven cars</li>
+    </ul>`
+  },
+  {
+    tag:"Justification · Duration of Time",
+    title:"How long has this been developing?",
+    back:`<h3>Timeline</h3><p>First seen at the <span class="stat">DARPA Urban Challenge, 2007</span>. Self-driving features are now rolling out rapidly on commercial cars, tied directly to how fast AI infrastructure improves.</p>`
+  },
+  {
+    tag:"Justification · Acceptability",
+    title:"Are people actually using it?",
+    back:`<h3>Tesla Q1 earnings</h3><ul>
+      <li><span class="stat">1.28 million</span> people using Full Self Driving</li>
+      <li><span class="stat">+51%</span> growth from last year</li>
+      <li><span class="stat">8 billion+</span> miles driven on FSD</li>
+    </ul><p>People are testing it — and sticking with it.</p>`
+  },
+  {
+    tag:"Justification · Cultural Basis",
+    title:"Does it fit what society already believes?",
+    back:`<h3>Rooted in existing values</h3><p>Growing <span class="stat">trust in AI</span> as a problem-solver, plus rising <span class="stat">concern for road safety</span> — both already-held beliefs that make the trend more likely to stick.</p>`
+  },
+  {
+    tag:"Justification · Transitory Increase",
+    title:"Is usage actually climbing?",
+    back:`<h3>Upward trend</h3><ul>
+      <li>Waymo's robotaxi gaining traction and users</li>
+      <li>Sharp rise in Tesla FSD subscriptions</li>
+      <li>Overall growth in mileage and usage</li>
+    </ul>`
+  },
+  {
+    tag:"Justification · Cause & Consequence",
+    title:"What's driving it, and what follows?",
+    back:`<h3>Causes</h3><ul>
+      <li>Rapid AI advancement</li>
+      <li>Growing public preference for automation</li>
+      <li>Need for road safety</li>
+    </ul><h3 style="margin-top:12px">Consequences</h3><ul>
+      <li>Safer roads, fewer human-error accidents</li>
+      <li>More accessible transportation for society</li>
+    </ul>`
+  },
+  {
+    tag:"Closing Statement",
+    title:"What's the takeaway?",
+    back:`<p>Self-driving cars are no longer just a concept — they're becoming a usable service. Every trend element is present: steady development, growing acceptability, and a real solution to human-error accidents.</p>
+    <p>The question has shifted from <span class="stat">"when"</span> autonomous cars become normal, to <span class="stat">"how soon."</span></p>`
+  }
+];
+
+const facts = [
+  {num:"2007", label:"DARPA Urban Challenge — first appearance of self-driving tech"},
+  {num:"1.28M", label:"People using Tesla Full Self Driving (Q1 earnings)"},
+  {num:"+51%", label:"Growth in FSD users vs. the previous year"},
+  {num:"8B+", label:"Miles driven using Full Self Driving"},
+  {num:"3", label:"Pieces of evidence: 1st-world rollout, feature advancement, safety"},
+  {num:"5", label:"Justification pillars: duration, acceptability, cultural basis, transitory increase, cause & consequence"}
+];
+
+const quiz = [
+  {
+    q:"Where were self-driving cars first seen, according to the presentation?",
+    options:["DARPA Urban Challenge (2007)","Tesla's first AutoPilot demo","A Waymo pilot program","The 2015 Geneva Motor Show"],
+    correct:0,
+    explain:"Self-driving technology was first seen at the DARPA Urban Challenge back in 2007 — this supports the 'Duration of Time' pillar, since trends need time to develop."
+  },
+  {
+    q:"About how many people were using Tesla's Full Self Driving system, per Tesla's Q1 earnings report?",
+    options:["510,000","1.28 million","8 million","51,000"],
+    correct:1,
+    explain:"Tesla's Q1 report cited about 1.28 million people using Full Self Driving — used as evidence under 'Acceptability.'"
+  },
+  {
+    q:"By how much did Tesla's FSD user base grow from the previous year?",
+    options:["12%","28%","51%","80%"],
+    correct:2,
+    explain:"The number of FSD users grew 51% year-over-year — showing the technology is being adopted, not just tried once."
+  },
+  {
+    q:"Which justification pillar covers Waymo's robotaxi growth and rising Tesla FSD subscriptions?",
+    options:["Cultural Basis","Transitory Increase","Cause & Consequence","Duration of Time"],
+    correct:1,
+    explain:"'Transitory Increase' argues the trend is on a clear upward trajectory — Waymo and Tesla's growth are the evidence."
+  },
+  {
+    q:"Which of these is listed as a CAUSE (not a consequence) of the self-driving trend?",
+    options:["Roads becoming safer","Reduced human-error accidents","Rapid advancement of AI","More accessible transportation"],
+    correct:2,
+    explain:"Causes: AI advancement, growing preference for automation, need for safety. Consequences: safer roads, fewer accidents, more accessible transport."
+  },
+  {
+    q:"What does 'Cultural Basis' argue makes this trend likely to stick?",
+    options:["It's cheaper than public transit","It fits existing trust in AI and rising road-safety concerns","It's required by new traffic laws","It replaces the need for driver's licenses"],
+    correct:1,
+    explain:"Cultural Basis says the trend is rooted in beliefs society already holds: trust in AI as a problem-solver, and concern over road safety."
+  },
+  {
+    q:"How many miles had been driven using Full Self Driving, per the report cited?",
+    options:["800 million","1.28 billion","8 billion+","51 million"],
+    correct:2,
+    explain:"At least 8 billion miles had been driven through Full Self Driving — a scale figure supporting 'Acceptability.'"
+  },
+  {
+    q:"According to the Closing Statement, how has the key question changed?",
+    options:["From 'if' to 'when'","From 'when' to 'how soon'","From 'how' to 'why'","From 'who' to 'where'"],
+    correct:1,
+    explain:"The closing statement reframes the debate: not 'when will autonomous cars become normal,' but 'how soon.'"
+  },
+  {
+    q:"Which is NOT listed as evidence supporting self-driving cars as a real trend?",
+    options:["Implementation in 1st-world countries","Continuous feature advancement","Generally safer than human-driven cars","Lower manufacturing cost than regular cars"],
+    correct:3,
+    explain:"Manufacturing cost isn't part of the evidence slide — the three listed points are rollout, feature advancement, and safety."
+  },
+  {
+    q:"Which technologies do self-driving cars use to read their environment?",
+    options:["Cameras, sensors, GPS, radar","Bluetooth, Wi-Fi, RFID","Satellite phones and sonar","Infrared only"],
+    correct:0,
+    explain:"The Description slide names cameras, sensors, GPS, and radar as the core technologies enabling safe navigation."
+  }
+];
+
+// ---------------- NAV ----------------
+const navButtons = document.querySelectorAll('nav button');
+navButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    navButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+// ---------------- FLASHCARDS ----------------
+let cardIdx = 0;
+const flashcard = document.getElementById('flashcard');
+const frontTag = document.getElementById('frontTag');
+const frontTitle = document.getElementById('frontTitle');
+const backContent = document.getElementById('backContent');
+const deckProgress = document.getElementById('deckProgress');
+const deckDots = document.getElementById('deckDots');
+
+function renderCard(){
+  flashcard.classList.remove('flipped');
+  const c = cards[cardIdx];
+  frontTag.textContent = c.tag;
+  frontTitle.textContent = c.title;
+  backContent.innerHTML = `<div class="pillar-tag">${c.tag}</div>${c.back}`;
+  deckProgress.textContent = `Card ${cardIdx+1} / ${cards.length}`;
+  [...deckDots.children].forEach((d,i)=>d.classList.toggle('on', i===cardIdx));
+}
+function buildDots(){
+  deckDots.innerHTML = cards.map((_,i)=>`<span class="dot" data-i="${i}"></span>`).join('');
+  deckDots.querySelectorAll('.dot').forEach(d=>{
+    d.addEventListener('click',()=>{ cardIdx = +d.dataset.i; renderCard(); });
+  });
+}
+flashcard.addEventListener('click', ()=> flashcard.classList.toggle('flipped'));
+document.getElementById('prevBtn').addEventListener('click',()=>{
+  cardIdx = (cardIdx - 1 + cards.length) % cards.length; renderCard();
+});
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  cardIdx = (cardIdx + 1) % cards.length; renderCard();
+});
+buildDots();
+renderCard();
+
+// ---------------- FACTS ----------------
+const factGrid = document.getElementById('factGrid');
+factGrid.innerHTML = facts.map(f=>`
+  <div class="fact-card">
+    <div class="fact-num">${f.num}</div>
+    <div class="fact-label">${f.label}</div>
+  </div>
+`).join('');
+
+// ---------------- QUIZ ----------------
+let qIdx = 0, score = 0, answered = false;
+const quizCard = document.getElementById('quizCard');
+const gaugeFill = document.getElementById('gaugeFill');
+const needle = document.getElementById('needle');
+const gaugeScore = document.getElementById('gaugeScore');
+
+function updateGauge(){
+  const frac = score / quiz.length;
+  const circumference = 298;
+  gaugeFill.style.strokeDashoffset = circumference - (circumference * frac);
+  const angle = -90 + (180 * frac);
+  needle.style.transform = `rotate(${angle}deg)`;
+  gaugeScore.textContent = `${score} / ${quiz.length} correct`;
+}
+
+function renderQuestion(){
+  answered = false;
+  if(qIdx >= quiz.length){ renderResult(); return; }
+  const item = quiz[qIdx];
+  quizCard.innerHTML = `
+    <div class="q-count">Question ${qIdx+1} of ${quiz.length}</div>
+    <div class="q-text">${item.q}</div>
+    <div class="options">
+      ${item.options.map((opt,i)=>`<button class="opt" data-i="${i}">${opt}</button>`).join('')}
+    </div>
+    <div class="explain" id="explainBox">${item.explain}</div>
+    <div class="quiz-foot"><button class="next-btn" id="nextQBtn" disabled>Next</button></div>
+  `;
+  const optBtns = quizCard.querySelectorAll('.opt');
+  optBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(answered) return;
+      answered = true;
+      const chosen = +btn.dataset.i;
+      optBtns.forEach(b=>b.disabled = true);
+      if(chosen === item.correct){
+        btn.classList.add('correct');
+        score++;
+        updateGauge();
+      } else {
+        btn.classList.add('wrong');
+        optBtns[item.correct].classList.add('correct');
+      }
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextQBtn').disabled = false;
+    });
+  });
+  document.getElementById('nextQBtn').addEventListener('click', ()=>{
+    qIdx++;
+    renderQuestion();
+  });
+}
+
+function renderResult(){
+  const pct = Math.round((score/quiz.length)*100);
+  let verdict;
+  if(pct >= 90) verdict = "Presentation-ready.";
+  else if(pct >= 70) verdict = "Solid grasp — reread the pillars you missed.";
+  else if(pct >= 50) verdict = "Getting there — flip back through the flashcards.";
+  else verdict = "Start with the flashcards, then retry.";
+  quizCard.innerHTML = `
+    <div class="result-card">
+      <div class="q-count">Final score</div>
+      <h2>${score} / ${quiz.length} — ${pct}%</h2>
+      <div class="sub" style="margin:0 auto;max-width:40ch;">${verdict}</div>
+      <button class="retry-btn" id="retryBtn">Retake quiz</button>
+    </div>
+  `;
+  document.getElementById('retryBtn').addEventListener('click', ()=>{
+    qIdx = 0; score = 0; updateGauge(); renderQuestion();
+  });
+}
+
+updateGauge();
+renderQuestion();
+</script>
+</body>
+</html>
